@@ -55,7 +55,7 @@ final class NBTUtils_Bukkit_named extends NBTUtils {
     private RefField field_NBTBase_name = class_NBTBase.findField(String.class);
 
     private RefMethod met_NBTBase_getTypeId = class_NBTBase.findMethodByReturnType(byte.class);
-    private RefMethod met_NBTBase_clone = class_NBTBase.findMethodByReturnType(class_NBTBase);
+    private RefMethod met_NBTBase_clone = class_NBTBase.findMethodByName("clone");
     private RefMethod met_NBTBase_createTag = class_NBTBase.findMethodByParams(byte.class, String.class);
     private RefMethod met_NBTBase_write = class_NBTBase.findMethodByParams(DataOutput.class);
 

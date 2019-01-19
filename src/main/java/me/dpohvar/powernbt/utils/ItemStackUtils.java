@@ -96,7 +96,7 @@ public final class ItemStackUtils {
         if (asNMSCopy != null) {
             return asNMSCopy.call(itemStack);
         } else {
-            int type = itemStack.getTypeId();
+            int type = itemStack.getType().getId();
             int amount = itemStack.getAmount();
             int data = itemStack.getData().getData();
             return conNmsItemStack.create(type, amount, data);

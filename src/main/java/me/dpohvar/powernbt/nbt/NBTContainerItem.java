@@ -22,7 +22,7 @@ public class NBTContainerItem extends NBTContainer<ItemStack> {
     @SuppressWarnings("deprecation")
     @Override
     public List<String> getTypes() {
-        int id = item.getTypeId();
+        int id = item.getType().getId();
         List<String> s = new ArrayList<String>();
         s.add("item");
         if (id == 387 || id == 386) s.add("item_book");

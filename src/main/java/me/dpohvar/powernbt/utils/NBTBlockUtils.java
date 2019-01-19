@@ -19,11 +19,13 @@ public final class NBTBlockUtils {
      */
     public static final NBTBlockUtils nbtBlockUtils = new NBTBlockUtils();
 
-    private NBTBlockUtils(){}
-
     private RefClass classCraftWorld = getRefClass("{cb}.CraftWorld, {CraftWorld}");
+    private RefClass classWorldServer = getRefClass("{nms}.WorldServer, {nm}.world.WorldServer, {WorldServer}");
     private RefClass classTileEntity = getRefClass("{nms}.TileEntity, {nm}.tileentity.TileEntity, {TileEntity}");
-    private RefMethod getTileEntityAt = classCraftWorld.findMethodByReturnType(classTileEntity); // (int x, int y, int z)
+    private RefClass classBlockPosition;
+    private RefMethod getHandle = classCraftWorld.findMethodByReturnType("{nms}.WorldServer, {nm}.world.WorldServer, {WorldServer}");
+    private RefMethod getTileEntityAt; // (int x, int y, int z)
+    private RefMethod getTileEntity; // (BlockPosition)
     private RefMethod getUpdatePacket = classTileEntity.findMethodByReturnType(
             "{nms}.PacketPlayOutTileEntityData",
             "{nms}.Packet, {nm}.network.Packet {nm}.network.packet.Packet, {Packet}"
@@ -45,6 +47,30 @@ public final class NBTBlockUtils {
                     .withSuffix("a")
                     .withReturnType(void.class)
     );
+    private RefConstructor conBlockPosition;
+
+    private NBTBlockUtils(){
+        try {
+             getTileEntityAt = classCraftWorld.findMethodByReturnType(classTileEntity); // old method for 1.13 lower
+        } catch(Exception e) {
+            getTileEntityAt = null;
+        }
+        try {
+            getTileEntity = classWorldServer.findMethodByReturnType(classTileEntity);
+        } catch(Exception e) {
+            getTileEntity = null;
+        }
+        try {
+             classBlockPosition = getRefClass("{nms}.BlockPosition, {BlockPosition}");
+        } catch(Exception e) {
+            classBlockPosition = null;
+        }
+        try {
+            conBlockPosition = classBlockPosition.getConstructor(int.class, int.class, int.class);
+        } catch(Exception e) {
+            conBlockPosition = null;
+        }
+    }
 
     /**
      * read NBTTagCompound for block
@@ -104,7 +130,12 @@ public final class NBTBlockUtils {
      * @return tile entity
      */
     public Object getTileEntity(Block block){
-        return getTileEntityAt.of(block.getWorld()).call(block.getX(), block.getY(), block.getZ());
+        if(getTileEntity != null && conBlockPosition != null) {
+            return getTileEntity.of(getHandle.of(block.getWorld()).call()).call(conBlockPosition.create(block.getX(), block.getY(), block.getZ()));
+        } else if(getTileEntityAt != null) {
+            return getTileEntityAt.of(block.getWorld()).call(block.getX(), block.getY(), block.getZ());
+        }
+        throw new RuntimeException("can't get tileentity");
     }
 
 

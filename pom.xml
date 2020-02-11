@@ -41,12 +41,12 @@
         <snapshotRepository>
             <id>dpohvar.ru</id>
             <name>dpohvar.ru-snapshots</name>
-            <url>http://repo.varscript.ru/snapshots</url>
+            <url>https://repo.varscript.ru/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>dpohvar.ru</id>
             <name>dpohvar.ru-releases</name>
-            <url>http://repo.varscript.ru/release</url>
+            <url>https://repo.varscript.ru/release</url>
         </repository>
     </distributionManagement>
 
